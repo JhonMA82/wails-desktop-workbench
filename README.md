@@ -2,6 +2,18 @@
 
 Reusable desktop foundation for technical applications. React 19 + TypeScript own presentation and Workbench services; Wails 3 + Go own the desktop host, persistence and jobs. No domain engine is bundled.
 
+## Screenshots
+
+![Workbench shell with Explorer and Inspector docked either side, a Welcome document, a Problems panel and a Ready status](build/workbench-initial.png)
+
+_Initial workspace in the browser preview fixture: Explorer, Welcome document, Inspector, Problems panel._
+
+![Workbench after the demo flow with a slim ribbon, Explorer collapsed to the activity rail and a Scratch 1 document](build/workbench-preview.png)
+
+_Same shell after the demo flow and a reload: slim ribbon, collapsed Explorer, `Scratch 1` restored as modified._
+
+Both captures come from `task web` at `http://127.0.0.1:5173/?preview=1` and are rewritten by `task e2e`. They are browser-fixture renders, not native GTK/WebKit window captures; see [acceptance](docs/ACCEPTANCE.md) for the native validation limit.
+
 ## Start
 
 Install Go **1.26.1**, Bun **1.3.10**, Task **3.45.4**, and Wails **v3.0.0-beta.27**:
