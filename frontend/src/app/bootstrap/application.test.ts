@@ -1,0 +1,55 @@
+import { it, expect, afterEach } from 'vitest';
+import { BrowserPreviewApi } from '../../platform/desktop-api/browser-preview';
+import { createApplication, type WorkbenchApplication } from './application';
+import { HistoryService } from '../../workbench/history/history-service';
+let apps: WorkbenchApplication[] = [];
+afterEach(() => {
+  apps.forEach((a) => a.dispose());
+  apps = [];
+  localStorage.clear();
+});
+it('documents, panel toggles, layout and settings survive a new session', async () => {
+  const a = await createApplication(new BrowserPreviewApi());
+  apps.push(a);
+  await a.commands.execute('document.open');
+  const id = a.documents.state.snapshot().active;
+  await a.commands.execute('view.explorer.toggle');
+  expect(a.layout.visible('explorer')).toBe(false);
+  a.settings.set({ ...a.settings.snapshot(), ribbonMode: 'slim' });
+  await a.persistence.flush();
+  const b = await createApplication(new BrowserPreviewApi());
+  apps.push(b);
+  expect(b.documents.state.snapshot().active).toBe(id);
+  expect(b.documents.state.snapshot().open).toHaveLength(2);
+  expect(b.layout.visible('explorer')).toBe(false);
+  expect(b.settings.snapshot().ribbonMode).toBe('slim');
+  await b.commands.execute('document.close');
+  expect(b.documents.state.snapshot().open).toHaveLength(1);
+});
+it('trust blocks jobs and history stays separate from commands and layout', async () => {
+  const a = await createApplication(new BrowserPreviewApi());
+  apps.push(a);
+  a.workspace.setTrust('untrusted');
+  expect(await a.commands.execute('jobs.demo.start')).toBe(false);
+  await a.commands.execute('document.demo.increment');
+  expect(a.documents.active()?.value).toBe(1);
+  await a.commands.execute('history.undo');
+  expect(a.documents.active()?.value).toBe(0);
+  await a.commands.execute('history.redo');
+  expect(a.documents.active()?.value).toBe(1);
+  await a.commands.execute('view.explorer.toggle');
+  await a.commands.execute('layout.undo');
+  expect(a.documents.active()?.value).toBe(1);
+});
+it('history supports do undo redo and clears the redo branch', () => {
+  let value = 0;
+  const h = new HistoryService();
+  h.do({ do: () => (value = 1), undo: () => (value = 0) });
+  h.undo();
+  expect(value).toBe(0);
+  h.redo();
+  expect(value).toBe(1);
+  h.undo();
+  h.do({ do: () => (value = 2), undo: () => (value = 0) });
+  expect(h.state.snapshot().canRedo).toBe(false);
+});

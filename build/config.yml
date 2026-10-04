@@ -1,0 +1,27 @@
+version: '3'
+info:
+  productName: Workbench
+  productIdentifier: org.workbench.boilerplate
+  version: 1.0.0
+dev_mode:
+  root_path: .
+  log_level: warn
+  debounce: 500
+  ignore:
+    dir: [.git, node_modules, frontend, build/bin]
+    file: ['*_test.go']
+    watched_extension: ['*.go']
+    git_ignore: true
+  executes:
+    - cmd: task bindings
+      type: blocking
+    - cmd: go build -tags dev,gtk3 -o build/bin/workbench .
+      type: blocking
+    - cmd: task web
+      type: background
+      readiness:
+        http: http://127.0.0.1:5173/
+        timeout: 30s
+    - cmd: ./build/bin/workbench
+      type: primary
+      exit_policy: shutdown

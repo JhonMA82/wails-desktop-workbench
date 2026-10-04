@@ -1,0 +1,52 @@
+[
+  {
+    "module": "github.com/adrg/xdg",
+    "version": "v0.5.3",
+    "licenseFiles": [
+      {
+        "name": "LICENSE",
+        "header": "The MIT License (MIT)  Copyright (c) 2014 Adrian-George Bostan <adrg@epistack.com>"
+      }
+    ]
+  },
+  {
+    "module": "github.com/godbus/dbus/v5",
+    "version": "v5.2.2",
+    "licenseFiles": [
+      {
+        "name": "LICENSE",
+        "header": "Copyright (c) 2013, Georg Reinke (<guelfey at gmail dot com>), Google All rights reserved. "
+      }
+    ]
+  },
+  {
+    "module": "golang.org/x/sys",
+    "version": "v0.46.0",
+    "licenseFiles": [
+      {
+        "name": "LICENSE",
+        "header": "Copyright 2009 The Go Authors.  Redistribution and use in source and binary forms, with or without"
+      }
+    ]
+  },
+  {
+    "module": "github.com/mattn/go-isatty",
+    "version": "v0.0.20",
+    "licenseFiles": [
+      {
+        "name": "LICENSE",
+        "header": "Copyright (c) Yasuhiro MATSUMOTO <mattn.jp@gmail.com>  MIT License (Expat)"
+      }
+    ]
+  },
+  {
+    "module": "github.com/wailsapp/wails/v3",
+    "version": "v3.0.0-beta.27",
+    "licenseFiles": [
+      {
+        "name": "LICENSE",
+        "header": "MIT License  Copyright (c) 2018-Present Lea Anthony"
+      }
+    ]
+  }
+]

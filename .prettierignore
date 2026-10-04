@@ -1,0 +1,6 @@
+frontend/bindings
+frontend/dist
+build
+bun.lock
+package-lock.json
+go.sum

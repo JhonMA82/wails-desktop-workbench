@@ -1,0 +1,52 @@
+version: '3'
+env:
+  GOFLAGS: '{{if eq OS "linux"}}-tags=gtk3{{end}}'
+tasks:
+  install:
+    cmds: ['bun install --frozen-lockfile', 'go mod download']
+  dev:
+    env:
+      WORKBENCH_DEV: '1'
+      # `wails3 dev` overwrites FRONTEND_DEVSERVER_URL from this port, so it is the
+      # single source of truth for the dev server the app connects to. It must match
+      # the port frontend/vite.config.ts serves and the readiness gate in build/config.yml.
+      WAILS_VITE_PORT: '5173'
+    cmds: ['wails3 dev -config build/config.yml']
+  web:
+    cmds: ['bunx --no-install vite --config frontend/vite.config.ts frontend']
+  typecheck:
+    cmds: ['bunx --no-install tsc -p frontend/tsconfig.json']
+  lint:
+    cmds:
+      [
+        'bunx --no-install eslint frontend/src',
+        'node scripts/boundaries.mjs',
+        'go vet ./internal/...',
+      ]
+  frontend-build:
+    cmds: ['bunx --no-install vite build --config frontend/vite.config.ts frontend']
+  bindings:
+    deps: [frontend-build]
+    cmds: ['wails3 generate bindings -d frontend/bindings -ts -i ./...']
+  build:
+    cmds:
+      - task: frontend-build
+      - go build -trimpath -o build/bin/workbench .
+  test:
+    cmds:
+      [
+        'bunx --no-install vitest run --config vite.config.ts --root frontend',
+        'go test -race ./internal/...',
+      ]
+  e2e:
+    cmds: ['bunx --no-install playwright test']
+  verify:
+    cmds:
+      - task: typecheck
+      - task: lint
+      - task: test
+      - task: build
+      - task: e2e
+
+  baseline:
+    cmds: ['node scripts/baseline.mjs']

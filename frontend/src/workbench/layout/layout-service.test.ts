@@ -1,0 +1,22 @@
+import { it, expect } from 'vitest';
+import { Actions } from 'flexlayout-react';
+import { LayoutService } from './layout-service';
+it('hides without leaving empty sidebars, restores and roundtrips docking states', () => {
+  const a = new LayoutService();
+  expect(a.state('explorer')).toBe('open');
+  a.hide('explorer');
+  expect(a.model.getNodeById('primary')).toBeUndefined();
+  a.show('explorer');
+  expect(a.state('explorer')).toBe('open');
+  a.collapse('explorer');
+  expect(a.state('explorer')).toBe('collapsed');
+  a.toggle('explorer');
+  expect(a.state('explorer')).toBe('open');
+  a.float('inspector');
+  expect(a.state('inspector')).toBe('floating');
+  a.model.doAction(Actions.setTabPinned('doc-welcome', true));
+  const b = new LayoutService();
+  b.restore(a.save());
+  expect(b.state('inspector')).toBe('floating');
+  expect(JSON.stringify(b.save())).toContain('"pinned":true');
+});

@@ -1,0 +1,7 @@
+node_modules/
+frontend/dist/
+build/bin/
+test-results/
+playwright-report/
+*.log
+build/*.log
