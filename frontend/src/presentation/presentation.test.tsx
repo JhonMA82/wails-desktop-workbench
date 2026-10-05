@@ -75,7 +75,10 @@ describe.each([
       await app!.commands.execute('document.demo.increment');
     });
     expect(app.documents.active()?.value).toBe(1);
-    await act(async () => {
+    // Synchronous act: JobService.startPolling refreshes every 150ms from the
+    // desktop API, so crossing a macrotask boundary would overwrite this
+    // injected snapshot before it can be asserted.
+    act(() => {
       app!.jobs.state.set([
         {
           id: 'shared-job',
