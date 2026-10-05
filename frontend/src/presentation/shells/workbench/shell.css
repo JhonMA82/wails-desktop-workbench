@@ -1,0 +1,257 @@
+.app-shell {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.appbar {
+  height: var(--appbar-height);
+  min-height: var(--appbar-height);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--border);
+}
+
+.appbar strong {
+  font-size: 11px;
+  letter-spacing: 1.8px;
+}
+
+.appbar-end {
+  margin-left: auto;
+  color: var(--foreground-secondary);
+}
+
+.ribbon {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: calc(var(--toolbar-height) + var(--space-2));
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 12px;
+}
+
+.ribbon nav {
+  margin-right: 18px;
+}
+
+.shell-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.activitybar {
+  width: var(--activitybar-width);
+  flex-shrink: 0;
+  background: var(--surface-1);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 3px;
+}
+
+.activitybar button {
+  height: calc(var(--control-height) + var(--space-2));
+  padding: 7px;
+}
+
+.activitybar svg {
+  width: 19px;
+}
+
+.activitybar button:last-child {
+  margin-top: auto;
+}
+
+.activitybar button[aria-pressed='true'] {
+  color: var(--accent);
+  box-shadow: inset 2px 0 var(--accent);
+}
+
+.docking {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.flexlayout__layout {
+  --flexlayout-color-background: var(--background);
+  --flexlayout-color-base: var(--surface-1);
+  --flexlayout-color-1: var(--surface-2);
+  --flexlayout-color-2: var(--surface-3);
+  --flexlayout-color-3: var(--border);
+  --flexlayout-color-4: var(--foreground-muted);
+  --flexlayout-color-5: var(--foreground);
+  --flexlayout-color-text: var(--foreground-secondary);
+  --flexlayout-color-tabset-background: var(--surface-1);
+  --flexlayout-color-tabset-background-selected: var(--surface-2);
+  --flexlayout-color-tabset-background-maximized: var(--surface-2);
+  --flexlayout-color-tab-selected: var(--foreground);
+  --flexlayout-color-tab-unselected: var(--foreground-muted);
+  --flexlayout-color-tab-selected-background: var(--surface-1);
+  --flexlayout-color-border: var(--border);
+  --flexlayout-color-splitter: var(--background);
+  --flexlayout-color-splitter-hover: var(--accent);
+  --flexlayout-color-drag-rect: var(--selection);
+  font-size: 11px;
+}
+
+.flexlayout__tabset_tabbar_outer,
+.flexlayout__border {
+  background: var(--surface-2) !important;
+  border: 0 !important;
+}
+
+.flexlayout__tab_button {
+  padding: 6px 10px !important;
+  border-radius: 0 !important;
+}
+
+.flexlayout__tab_button--selected {
+  border-top: 2px solid var(--accent) !important;
+  background: var(--surface-1) !important;
+}
+
+.flexlayout__tabset {
+  border: 1px solid var(--border) !important;
+}
+
+.flexlayout__tab_toolbar_button {
+  padding: 3px !important;
+}
+
+.flexlayout__tab {
+  background: var(--surface-1) !important;
+}
+
+.flexlayout__splitter {
+  background: var(--background) !important;
+}
+
+.flexlayout__splitter:hover {
+  background: var(--accent) !important;
+}
+
+.flexlayout__float_window {
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 30px #0009;
+}
+
+.flexlayout__popup_menu {
+  background: var(--surface-2) !important;
+  color: var(--foreground) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .appbar-end {
+    font-size: 10px;
+  }
+  .ribbon {
+    gap: 3px;
+  }
+}
+
+.ribbon-wrap {
+  background: var(--surface-2);
+}
+
+.ribbon-tools {
+  display: flex;
+  gap: 5px;
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border);
+  min-height: calc(var(--toolbar-height) + var(--space-2));
+  overflow: auto;
+}
+
+.ribbon-tools button {
+  white-space: nowrap;
+}
+
+.ribbon [role='tab'][aria-selected='true'] {
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+  border-radius: 0;
+}
+
+.ribbon-wrap .ribbon {
+  padding: 0 6px;
+}
+
+.activitybar a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground-secondary);
+  margin-top: auto;
+  height: calc(var(--control-height) + var(--space-2));
+}
+
+.activitybar div[aria-pressed='true'] {
+  box-shadow: inset 2px 0 var(--accent);
+  color: var(--accent);
+}
+
+.appbar-end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.appbar-end a {
+  font-size: 11px;
+  color: var(--foreground-secondary);
+  text-decoration: none;
+}
+
+.zen .flexlayout__tabset:has(.tree),
+.zen .flexlayout__tabset:has(.properties) {
+  opacity: 0.7;
+}
+
+.flexlayout__layout {
+  --flexlayout-font-size: 11px;
+  --flexlayout-font-family: var(--font-ui);
+  --flexlayout-color-tabset-background: var(--surface-1);
+  --flexlayout-color-tab-content: var(--surface-1);
+}
+
+.flexlayout__tab_button_content {
+  font-size: 11px !important;
+}
+
+.flexlayout__tabset_tabbar_inner_tab_container {
+  padding-top: 0 !important;
+}
+
+.flexlayout__layout {
+  --flexlayout-splitter-size: 4px;
+  --flexlayout-color-icon: var(--foreground-muted);
+  --flexlayout-color-focus: var(--focus);
+  --flexlayout-color-border-tab-content: var(--surface-1);
+  --flexlayout-color-border-background: var(--surface-2);
+  --flexlayout-color-float-window-header-background: var(--surface-2);
+}
+
+.flexlayout__tab_button {
+  min-height: var(--tab-height);
+  padding: var(--space-1) var(--space-2) !important;
+}
+.flexlayout__tabset_tabbar_outer {
+  min-height: var(--tab-height);
+}

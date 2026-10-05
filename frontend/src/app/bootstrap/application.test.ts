@@ -1,3 +1,4 @@
+import { LayoutService } from '../../presentation/shells/workbench/layout/layout-service';
 import { it, expect, afterEach } from 'vitest';
 import { BrowserPreviewApi } from '../../platform/desktop-api/browser-preview';
 import { createApplication, type WorkbenchApplication } from './application';
@@ -9,7 +10,7 @@ afterEach(() => {
   localStorage.clear();
 });
 it('documents, panel toggles, layout and settings survive a new session', async () => {
-  const a = await createApplication(new BrowserPreviewApi());
+  const a = await createApplication(new BrowserPreviewApi(), new LayoutService());
   apps.push(a);
   await a.commands.execute('document.open');
   const id = a.documents.state.snapshot().active;
@@ -17,7 +18,7 @@ it('documents, panel toggles, layout and settings survive a new session', async 
   expect(a.layout.visible('explorer')).toBe(false);
   a.settings.set({ ...a.settings.snapshot(), ribbonMode: 'slim' });
   await a.persistence.flush();
-  const b = await createApplication(new BrowserPreviewApi());
+  const b = await createApplication(new BrowserPreviewApi(), new LayoutService());
   apps.push(b);
   expect(b.documents.state.snapshot().active).toBe(id);
   expect(b.documents.state.snapshot().open).toHaveLength(2);
@@ -27,7 +28,7 @@ it('documents, panel toggles, layout and settings survive a new session', async 
   expect(b.documents.state.snapshot().open).toHaveLength(1);
 });
 it('trust blocks jobs and history stays separate from commands and layout', async () => {
-  const a = await createApplication(new BrowserPreviewApi());
+  const a = await createApplication(new BrowserPreviewApi(), new LayoutService());
   apps.push(a);
   a.workspace.setTrust('untrusted');
   expect(await a.commands.execute('jobs.demo.start')).toBe(false);

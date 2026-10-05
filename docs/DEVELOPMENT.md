@@ -36,7 +36,7 @@ Use native Wails prerequisites for macOS/Windows. Build/launch validation in thi
 | `task test` | Vitest/Testing Library and Go race tests |
 | `task e2e` | Playwright critical UI smoke |
 | `task build` | Frontend assets + native Go binary in build/bin |
-| `task verify` | Typecheck → lint → tests → build → E2E |
+| `task verify` | Typecheck → lint → tests → both shell builds/E2E → selected native build |
 | `task bindings` | Regenerate typed Wails interfaces |
 | `task baseline` | Clean install/cache build, incremental build, Vite readiness/HMR, verify timings |
 
@@ -50,7 +50,7 @@ Create `frontend/src/features/<name>/` only when there is real domain code. Cons
 
 ## Add a panel
 
-Add a stable PanelId/title and initial placement or command in the layout adapter; supply its renderer through the Workbench panel factory. Reuse WorkbenchPanel/PanelHeader. Register show/toggle actions in the composition root. A feature only exposes content and services, not FlexLayout nodes. Domain UI belongs in its feature folder.
+Add a stable PanelId/title in `workbench/layout/layout-contract.ts` and initial placement in the selected shell layout adapter; supply its renderer through the Workbench panel factory. Reuse presentation Panel/PanelHeader. Register show/toggle actions in the composition root. A feature only exposes content and services, not FlexLayout nodes. Domain UI belongs in its feature folder.
 
 ## Add a command
 
@@ -58,4 +58,6 @@ Register a stable ID and a single execute function in `register-commands.ts` or 
 
 ## Repository navigation
 
-`app/bootstrap` composes; `workbench` owns infrastructure; `platform/desktop-api` is the frontend native boundary; `shared` only contains UI/schema/subscription utilities. `internal/app` has Go use cases, `internal/runtime` the mock/contract, `internal/persistence` records, and `internal/platform` bindings/native shell. AGENTS.md provides a short change checklist. No empty architectural folders are created.
+`app/bootstrap` composes; `workbench` owns infrastructure; `platform/desktop-api` is the frontend native boundary; `presentation` owns shells/themes/density/shared visual primitives; `shared` only contains schema/subscription utilities. `internal/app` has Go use cases, `internal/runtime` the mock/contract, `internal/persistence` records, and `internal/platform` bindings/native shell. AGENTS.md provides a short change checklist. No empty architectural folders are created.
+
+See [PRESENTATION.md](PRESENTATION.md) for static shell selection, HTML/Tailwind conversion and preference persistence. `task presentations-verify` tests the alternate shell and restores the current selection.

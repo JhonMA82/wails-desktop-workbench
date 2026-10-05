@@ -1,0 +1,14 @@
+[data-theme='light'] {
+  color-scheme: light;
+  --background: #edf0f3;
+  --surface-1: #f7f8fa;
+  --surface-2: #e4e8ed;
+  --surface-3: #d6dde5;
+  --border: #bdc7d2;
+  --foreground: #263340;
+  --foreground-secondary: #516172;
+  --foreground-muted: #788594;
+  --accent: #167c70;
+  --selection: #cbe6df;
+  --focus: #167c70;
+}

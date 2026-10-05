@@ -43,7 +43,7 @@ try {
   measure('incremental-build', 'task', ['build']);
   let server;
   let browser;
-  const appbar = 'frontend/src/workbench/shell/AppBar.tsx',
+  const appbar = 'frontend/src/presentation/shells/workbench/components/AppBar.tsx',
     original = fs.readFileSync(appbar, 'utf8');
   try {
     const start = performance.now();

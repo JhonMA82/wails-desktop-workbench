@@ -1,0 +1,15 @@
+:root,
+[data-theme='graphite'] {
+  color-scheme: dark;
+  --background: #16191e;
+  --surface-1: #1d2128;
+  --surface-2: #242932;
+  --surface-3: #2d3440;
+  --border: #343b46;
+  --foreground: #d9e0eb;
+  --foreground-secondary: #a0aabb;
+  --foreground-muted: #687589;
+  --accent: #65c8b6;
+  --selection: #294a48;
+  --focus: #76ddcd;
+}

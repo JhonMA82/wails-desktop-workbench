@@ -1,6 +1,7 @@
+import { z } from 'zod';
 import type { ApplicationServices } from './application';
 import { demoDocument } from '../../workbench/documents/document-service';
-import { panelTitles, type PanelId } from '../../workbench/layout/layout-service';
+import { panelTitles, type PanelId } from '../../workbench/layout/layout-contract';
 export function registerCommands(app: ApplicationServices) {
   const {
     commands,
@@ -87,12 +88,10 @@ export function registerCommands(app: ApplicationServices) {
       const doc = documents.active();
       if (!doc) return;
       const old = doc.value;
-      app
-        .history()
-        .do({
-          do: () => documents.change(doc.id, old + 1),
-          undo: () => documents.change(doc.id, old),
-        });
+      app.history().do({
+        do: () => documents.change(doc.id, old + 1),
+        undo: () => documents.change(doc.id, old),
+      });
     },
     enabled: (c) => !!c['document.open'],
   });
@@ -122,6 +121,7 @@ export function registerCommands(app: ApplicationServices) {
       category: 'View',
       keybinding: id === 'explorer' ? 'Mod+B' : undefined,
       execute: () => layout.toggle(id),
+      when: (c) => !!c['panel.' + id + '.supported'],
     });
   }
   add({
@@ -157,6 +157,7 @@ export function registerCommands(app: ApplicationServices) {
       icon: 'close',
       category: 'View',
       execute: () => layout.collapse(id),
+      when: (c) => !!c['layout.collapse'],
     });
     add({
       id: 'view.' + id + '.float',
@@ -164,6 +165,7 @@ export function registerCommands(app: ApplicationServices) {
       icon: 'inspector',
       category: 'View',
       execute: () => layout.float(id),
+      when: (c) => !!c['layout.floating'],
     });
   }
   add({
@@ -268,7 +270,17 @@ export function registerCommands(app: ApplicationServices) {
     title: 'Quick Input',
     icon: 'open',
     category: 'Home',
-    execute: () => dialogs.patch({ quick: true }),
+    execute: (input) => {
+      if (input === undefined) {
+        dialogs.patch({ quick: true });
+        return;
+      }
+      const title = z.string().trim().min(1).parse(input);
+      const doc = demoDocument(crypto.randomUUID());
+      doc.title = title;
+      documents.open(doc);
+      dialogs.patch({ quick: false });
+    },
   });
   context.set('editor.focused', false);
 }

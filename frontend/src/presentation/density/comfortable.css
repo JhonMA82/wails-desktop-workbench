@@ -1,0 +1,16 @@
+[data-density='comfortable'] {
+  --appbar-height: 46px;
+  --ribbon-height: 88px;
+  --toolbar-height: 38px;
+  --tab-height: 36px;
+  --statusbar-height: 30px;
+  --activitybar-width: 52px;
+  --control-height: 36px;
+  --panel-header-height: 38px;
+  --list-row-height: 36px;
+  --space-1: 6px;
+  --space-2: 12px;
+  --space-3: 16px;
+  --space-4: 22px;
+  --control-padding: 9px 12px;
+}

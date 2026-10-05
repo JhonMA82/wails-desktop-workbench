@@ -45,8 +45,11 @@ tasks:
       - task: typecheck
       - task: lint
       - task: test
+      - task: presentations-verify
       - task: build
-      - task: e2e
+
+  presentations-verify:
+    cmds: ['node scripts/verify-presentations.mjs']
 
   baseline:
     cmds: ['node scripts/baseline.mjs']

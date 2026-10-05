@@ -4,7 +4,7 @@ import type { UserSettings } from '../../shared/schemas/records';
 import { ContextKeyService } from '../../workbench/context/context-keys';
 import { CommandRegistry } from '../../workbench/commands/command-registry';
 import { DocumentService } from '../../workbench/documents/document-service';
-import { LayoutService } from '../../workbench/layout/layout-service';
+import { panelTitles, type PanelId, type LayoutPort } from '../../workbench/layout/layout-contract';
 import { WorkspaceService } from '../../workbench/workspace/workspace-service';
 import { HistoryService } from '../../workbench/history/history-service';
 import { JobService } from '../../workbench/jobs/job-service';
@@ -13,13 +13,12 @@ import { NotificationService } from '../../workbench/notifications/notification-
 import { DiagnosticsService } from './diagnostics';
 import { SessionPersistence } from './persistence';
 import { registerCommands } from './register-commands';
-export async function createApplication(api: DesktopApi) {
+export async function createApplication(api: DesktopApi, layout: LayoutPort) {
   const session = await api.loadSession();
   const diagnostics = new DiagnosticsService(api);
   diagnostics.state.set(session.diagnostics);
   const settings = new ObservableValue<UserSettings>(session.settings),
     documents = new DocumentService(),
-    layout = new LayoutService(),
     workspace = new WorkspaceService(documents, layout),
     context = new ContextKeyService(),
     dialogs = new DialogService(),
@@ -45,6 +44,15 @@ export async function createApplication(api: DesktopApi) {
       state = workspace.state.snapshot();
     const hist = histories.get(doc?.id ?? '')?.state.snapshot();
     context.update({
+      ...Object.fromEntries(
+        (Object.keys(panelTitles) as PanelId[]).map((id) => [
+          'panel.' + id + '.supported',
+          layout.capabilities.panels.includes(id),
+        ]),
+      ),
+      'layout.floating': layout.capabilities.floating,
+      'layout.collapse': layout.capabilities.collapse,
+      'host.kind': api.kind,
       'workspace.open': state.open,
       'workspace.trusted': state.trust === 'trusted',
       'document.open': !!doc,

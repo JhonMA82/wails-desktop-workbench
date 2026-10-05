@@ -12,16 +12,45 @@ function walk(dir) {
         (m) => m[2],
       );
       for (const name of imports) {
-        if (name.startsWith('flexlayout-react') && !file.includes('/workbench/layout/'))
+        const target = name.startsWith('.')
+          ? path.normalize(path.join(path.dirname(file), name)).replaceAll('\\', '/')
+          : name;
+        const test = file.includes('.test.');
+        if (
+          !test &&
+          (file.startsWith(root + '/workbench/') || file.startsWith(root + '/app/bootstrap/')) &&
+          target.includes('/presentation/')
+        )
+          failures.push(file + ': application depends on presentation');
+        if (
+          !test &&
+          file.includes('/presentation/') &&
+          !file.includes('/contract/') &&
+          target.includes('/app/')
+        )
+          failures.push(file + ': presentation bypasses its Application contract');
+        if (
+          file.includes('/presentation/shells/minimal/') &&
+          /flexlayout|shells\/workbench/.test(target)
+        )
+          failures.push(file + ': Minimal depends on Workbench');
+
+        if (
+          name.startsWith('flexlayout-react') &&
+          !file.includes('/presentation/shells/workbench/layout/')
+        )
           failures.push(file + ': FlexLayout outside adapter');
         if (
-          (name.includes('/bindings/') || name === '@wailsio/runtime') &&
+          (target.includes('frontend/bindings') || name.startsWith('@wailsio/')) &&
           !file.includes('/platform/desktop-api/')
         )
           failures.push(file + ': raw desktop API outside platform');
         if (file.includes('/shared/') && /workbench|platform|app\//.test(name))
           failures.push(file + ': shared imports application');
-        if (file.includes('/features/') && /workbench\/layout|bindings|@wailsio/.test(name))
+        if (
+          file.includes('/features/') &&
+          /presentation\/shells|workbench\/layout|bindings|@wailsio/.test(target)
+        )
           failures.push(file + ': feature imports infrastructure');
         if (file.includes('/app/router/') && name.includes('flexlayout'))
           failures.push(file + ': router owns layout');
@@ -30,6 +59,19 @@ function walk(dir) {
   }
 }
 walk(root);
+function checkBackend(dir) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const file = path.join(dir, entry.name);
+    if (entry.isDirectory()) checkBackend(file);
+    else if (file.endsWith('.go')) {
+      const source = fs.readFileSync(file, 'utf8');
+      for (const block of source.matchAll(/import\s*(\([\s\S]*?\)|"[^"]+")/g))
+        if (/presentation|flexlayout|react(?:\/|")/i.test(block[1]))
+          failures.push(file + ': backend imports presentation');
+    }
+  }
+}
+checkBackend('internal');
 for (const file of ['package.json']) {
   const pkg = JSON.parse(fs.readFileSync(file));
   for (const [name, version] of Object.entries({ ...pkg.dependencies, ...pkg.devDependencies }))

@@ -1,7 +1,7 @@
 import { ObservableValue } from '../../shared/utils/observable-value';
 import type { WorkspaceRecord } from '../../shared/schemas/records';
 import type { DocumentService } from '../documents/document-service';
-import type { LayoutService } from '../layout/layout-service';
+import type { LayoutPort } from '../layout/layout-contract';
 export class WorkspaceService {
   readonly state = new ObservableValue({
     id: 'demo',
@@ -11,7 +11,7 @@ export class WorkspaceService {
   });
   constructor(
     readonly documents: DocumentService,
-    readonly layout: LayoutService,
+    readonly layout: LayoutPort,
   ) {}
   restore(v: WorkspaceRecord) {
     this.state.set({ id: v.id, title: v.title, trust: v.trust, open: true });

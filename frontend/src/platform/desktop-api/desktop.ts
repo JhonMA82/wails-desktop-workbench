@@ -1,3 +1,4 @@
+import { loadDensity, saveDensity } from './presentation-preferences';
 import { z } from 'zod';
 import { sessionSchema, jobSchema, diagnosticSchema } from '../../shared/schemas/records';
 import type { DesktopApi } from './contract';
@@ -12,7 +13,10 @@ export async function createDesktopApi(): Promise<DesktopApi> {
   const { Events, Window } = await import('@wailsio/runtime');
   return {
     kind: 'desktop',
-    loadSession: async () => sessionSchema.parse(await host.LoadSession()),
+    loadSession: async () => {
+      const session = sessionSchema.parse(await host.LoadSession());
+      return { ...session, settings: { ...session.settings, density: loadDensity() } };
+    },
     saveWorkspace: async (v) => {
       await host.SaveWorkspace({
         ...v,
@@ -21,6 +25,7 @@ export async function createDesktopApi(): Promise<DesktopApi> {
     },
     saveSettings: async (v) => {
       await host.SaveSettings(v);
+      saveDensity(v.density);
     },
     startJob: async (fail) => jobSchema.parse(await host.StartJob(fail)),
     cancelJob: async (id) => {

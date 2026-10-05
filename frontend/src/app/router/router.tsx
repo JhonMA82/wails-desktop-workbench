@@ -1,13 +1,25 @@
-import { createRootRoute, createRoute, createRouter, Outlet, Link } from '@tanstack/react-router';
-import { Shell } from '../../workbench/shell/Shell';
-import { SettingsPage } from './SettingsPage';
-const root = createRootRoute({ component: () => <Outlet /> });
+import {
+  createRootRoute,
+  createRoute,
+  createRouter,
+  Outlet,
+  Link,
+  retainSearchParams,
+} from '@tanstack/react-router';
+import { AppShell } from '../../presentation/active';
+import { SettingsPage } from '../../presentation/views/SettingsPage';
+const root = createRootRoute({
+  component: () => <Outlet />,
+  validateSearch: (search: Record<string, unknown>): { preview?: string } =>
+    search.preview === '1' ? { preview: '1' } : {},
+  search: { middlewares: [retainSearchParams(['preview'])] },
+});
 const home = createRoute({ getParentRoute: () => root, path: '/', component: Landing });
 const projects = createRoute({ getParentRoute: () => root, path: '/projects', component: Landing });
 const workspace = createRoute({
   getParentRoute: () => root,
   path: '/workspace/$workspaceId',
-  component: Shell,
+  component: AppShell,
 });
 const settings = createRoute({
   getParentRoute: () => root,

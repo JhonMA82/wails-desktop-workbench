@@ -14,6 +14,7 @@ export type ResourceId = z.infer<typeof resourceIdSchema>;
 export const settingsSchema = z.object({
   schemaVersion: z.literal(1),
   theme: z.enum(['dark', 'light']),
+  density: z.enum(['compact', 'comfortable']).default('compact'),
   ribbonMode: z.enum(['full', 'slim', 'hidden']),
   restoreWorkspace: z.boolean(),
 });
@@ -54,6 +55,7 @@ export type Session = z.infer<typeof sessionSchema>;
 export const defaultSettings: UserSettings = {
   schemaVersion: 1,
   theme: 'dark',
+  density: 'compact',
   ribbonMode: 'full',
   restoreWorkspace: true,
 };

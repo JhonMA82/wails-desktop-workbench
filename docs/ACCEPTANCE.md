@@ -1,5 +1,9 @@
 # Acceptance / v1 freeze
 
+Presentation refactor validated on 2026-10-05: `task verify` passed in 50.41 s; 16 frontend tests, existing Go race tests, 3 Workbench E2E scenarios and 1 Minimal E2E scenario passed. Both presentations and the selected Linux native app build. Go source, bindings, dependency versions and lockfiles are unchanged. See [PRESENTATION.md](PRESENTATION.md) and VERIFICATION.txt.
+
+The remaining sections retain the original v1 acceptance snapshot and performance baseline from before the presentation extraction; they are historical measurements, not new refactor timings.
+
 The complete Task acceptance sequence passes on Linux amd64, Go 1.26.1, Wails v3.0.0-beta.27, Bun 1.3.10. Architecture v1 is frozen.
 
 ## Verified
@@ -33,7 +37,7 @@ No stack decision was replaced. Linux GTK3 is an official Wails build option. Na
 
 No domain engine, plugin system, AI/MCP, server, database, auth or cloud was added. Browser fixture jobs are explicit; production desktop uses Go JobService and MockRuntime.
 
-## Actual repository structure
+## Original v1 repository structure (before presentation extraction)
 
 ```text
 build/

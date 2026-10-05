@@ -54,3 +54,5 @@ Mod means Ctrl on Linux/Windows and Cmd on macOS. Ribbon Home/View/Tools, menu, 
 Mandatory boilerplate dependencies must remain open source and commercially usable without paid runtime or developer licences.
 
 The v1 architecture is frozen. Change infrastructure only in response to a demonstrated friction in a real product. Start product-specific work in `frontend/src/features/<feature>/` and `internal/app/<feature>/` when needed; no empty feature folders or extension framework are included.
+
+Presentation can be selected statically as Workbench or Minimal, independently of Graphite/Light and Compact/Comfortable preferences. See [docs/PRESENTATION.md](docs/PRESENTATION.md). Wails/Go services and generated bindings remain unchanged.

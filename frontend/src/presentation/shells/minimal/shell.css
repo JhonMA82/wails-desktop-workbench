@@ -1,0 +1,82 @@
+.minimal-shell {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+}
+.minimal-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--appbar-height);
+  padding: 0 var(--space-4);
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--border);
+}
+.minimal-header strong {
+  color: var(--accent);
+  letter-spacing: 0.12em;
+}
+.minimal-header nav {
+  margin-left: auto;
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+.minimal-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-bottom: 1px solid var(--border);
+}
+.minimal-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.minimal-sidebar {
+  width: 200px;
+  overflow: auto;
+  border-inline-end: 1px solid var(--border);
+}
+.minimal-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+.minimal-content .editor-surface {
+  flex: 1;
+  height: auto;
+}
+.minimal-content .welcome {
+  max-width: 650px;
+  padding: var(--space-4);
+}
+.minimal-tabs {
+  display: flex;
+  min-height: var(--tab-height);
+  border-bottom: 1px solid var(--border);
+  overflow: auto;
+}
+.minimal-tabs [aria-selected='true'] {
+  background: var(--selection);
+}
+.minimal-jobs {
+  height: 140px;
+  overflow: auto;
+  border-top: 1px solid var(--border);
+}
+@media (max-width: 900px) {
+  .minimal-sidebar {
+    width: 150px;
+  }
+  .minimal-body > .minimal-sidebar:last-child {
+    display: none;
+  }
+  .minimal-toolbar button {
+    font-size: 11px;
+  }
+}

@@ -1,1 +1,19 @@
-{"$schema":"https://ui.shadcn.com/schema.json","style":"new-york","rsc":false,"tsx":true,"tailwind":{"css":"frontend/src/styles.css","baseColor":"slate","cssVariables":true},"aliases":{"components":"@/shared","ui":"@/shared/ui","utils":"@/shared/utils/cn","hooks":"@/shared/hooks","lib":"@/shared"},"iconLibrary":"lucide"}
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "css": "frontend/src/presentation/styles.css",
+    "baseColor": "slate",
+    "cssVariables": true
+  },
+  "aliases": {
+    "components": "@/presentation/design-system/components",
+    "ui": "@/presentation/design-system/components",
+    "utils": "@/shared/utils/cn",
+    "hooks": "@/shared/hooks",
+    "lib": "@/shared"
+  },
+  "iconLibrary": "lucide"
+}

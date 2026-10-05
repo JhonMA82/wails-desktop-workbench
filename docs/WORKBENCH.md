@@ -31,3 +31,5 @@ The desktop Go runtime drives queued/running/completed/cancelled/failed jobs. Re
 Errors from command execution, persistence, polling, `error` and `unhandledrejection` are recorded in diagnostics. The Problems panel shows them; Tools/Diagnostics displays runtime version/capabilities and a snapshot. Startup recovery corruption produces a visible startup failure rather than silently overwriting user state.
 
 Keyboard shortcuts, focus outlines, accessible labels, Radix modal focus management, cmdk keyboard selection and reduced-motion CSS support the main operations. This is a desktop interface, not a mobile layout.
+
+The Workbench UI lives in `presentation/shells/workbench`; shared views/primitives live under presentation. Shell-neutral Workbench services remain under `workbench`. Minimal consumes the same services without docking. See [PRESENTATION.md](PRESENTATION.md).

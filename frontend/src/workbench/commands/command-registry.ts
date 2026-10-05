@@ -24,7 +24,7 @@ export interface Command {
   icon?: IconName;
   category: 'Home' | 'View' | 'Tools' | 'Edit';
   feature?: string;
-  execute: () => void | Promise<void>;
+  execute: (input?: unknown) => void | Promise<void>;
   when?: Condition;
   enabled?: Condition;
   keybinding?: string;
@@ -52,12 +52,12 @@ export class CommandRegistry {
   list() {
     return [...this.commands.values()].filter((c) => this.visible(c));
   }
-  async execute(id: string) {
+  async execute(id: string, input?: unknown) {
     const command = this.get(id);
     if (!command) throw new Error('Unknown command: ' + id);
     if (!this.enabled(command)) return false;
     try {
-      await command.execute();
+      await command.execute(input);
       return true;
     } catch (error) {
       this.report(error);
