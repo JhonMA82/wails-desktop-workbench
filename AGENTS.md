@@ -19,4 +19,7 @@ The existing application architecture v1 remains frozen; presentation is replace
 - Global UI structure → presentation/shells.
 - Appearance → presentation/themes; density → presentation/density.
 - Application must not import a concrete presentation; presentation uses its existing-service contract.
+- `workbench` is the retained name for shell-neutral services; visual components belong in `presentation` or feature content.
 - Read docs/PRESENTATION.md before adapting HTML/Tailwind or adding a shell. Never copy mock business state into a shell.
+- A new shell extends the explicit ShellId union and registers render/build/browser acceptance cases. Switching an existing preset only edits presentation/active.ts. No dynamic shell registry.
+- The separately installed add-presentation-shell skill applies only when adding a new interface; normal edits use the repository workflow.

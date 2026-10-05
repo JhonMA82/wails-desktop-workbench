@@ -34,13 +34,15 @@ Use native Wails prerequisites for macOS/Windows. Build/launch validation in thi
 | `task typecheck` | Strict TypeScript |
 | `task lint` | ESLint, import boundaries, pinned dependency check, Go vet |
 | `task test` | Vitest/Testing Library and Go race tests |
-| `task e2e` | Playwright critical UI smoke |
+| `task e2e` | Workbench browser smoke by default; `PRESENTATION_TEST_SHELL=minimal task e2e` selects Minimal (build/select that shell first) |
+| `task frontend-build` | Build assets for the statically selected shell |
+| `task presentations-verify` | Temporarily select/build/test Workbench and Minimal, then restore the original selection and assets |
 | `task build` | Frontend assets + native Go binary in build/bin |
 | `task verify` | Typecheck → lint → tests → both shell builds/E2E → selected native build |
 | `task bindings` | Regenerate typed Wails interfaces |
 | `task baseline` | Clean install/cache build, incremental build, Vite readiness/HMR, verify timings |
 
-Go changes rebuild through `build/config.yml`; generated bindings must be refreshed when bound signatures change. Frontend HMR is provided by Vite. The Linux dev config passes GTK3; remove that tag in the dev command on macOS/Windows if needed (Go ignores the GTK3-specific code there).
+Go changes rebuild through `build/config.yml`; generated bindings must be refreshed when bound signatures change. Frontend HMR is provided by Vite. Taskfile applies GTK3 to Linux tasks only. The checked-in Wails dev rebuild command also explicitly includes `dev,gtk3`; review that command and executable path when configuring native development on another OS. No macOS/Windows launch validation is claimed.
 
 E2E intentionally uses the browser fixture. Playwright does not reliably attach to this Wails GTK shell. Go tests cover real jobs/runtime cancellation/trust/persistence/diagnostics. Native window/menus/single-instance/close and desktop popouts must be exercised manually on the target desktop; this container cannot provide a working D-Bus Unix session. This is a validation limit, not a replacement of Wails.
 
@@ -50,14 +52,20 @@ Create `frontend/src/features/<name>/` only when there is real domain code. Cons
 
 ## Add a panel
 
-Add a stable PanelId/title in `workbench/layout/layout-contract.ts` and initial placement in the selected shell layout adapter; supply its renderer through the Workbench panel factory. Reuse presentation Panel/PanelHeader. Register show/toggle actions in the composition root. A feature only exposes content and services, not FlexLayout nodes. Domain UI belongs in its feature folder.
+Add a stable PanelId/title in `frontend/src/workbench/layout/layout-contract.ts`. Register show/toggle commands in application composition and declare support in each applicable LayoutPort adapter. Place/render the content in that shell: Workbench uses its DockingLayout factory; Minimal uses explicit React regions. Unsupported panel commands are hidden through capability Context Keys. Reuse presentation Panel/PanelHeader; domain content belongs in its feature folder and exposes no FlexLayout nodes.
 
 ## Add a command
 
 Register a stable ID and a single execute function in `register-commands.ts` or a feature's explicit registration function called by composition. Supply context predicates and category/icon/keybinding. Consume the ID with CommandButton, menu, palette or a native-menu event. Never reproduce the execute logic in a surface.
 
+## Add a new interface
+
+Follow [PRESENTATION.md](PRESENTATION.md): create a static shell/preset/LayoutPort, extend the explicit ShellId union, and register its render/build/browser checks. Theme and density remain independent. Switching between the two existing presets requires only changing `presentation/active.ts`; introducing a third preset also requires its typed ID and test registration.
+
+The optional personal skill `add-presentation-shell` automates conversion preflight/scaffolding/checks when adding a new interface. It is installed separately, not shipped in this repository or run for routine UI edits. Its Node scripts live inside the skill package; repository verification remains in `scripts/` and Taskfile. The manual workflow here is sufficient without the skill.
+
 ## Repository navigation
 
-`app/bootstrap` composes; `workbench` owns infrastructure; `platform/desktop-api` is the frontend native boundary; `presentation` owns shells/themes/density/shared visual primitives; `shared` only contains schema/subscription utilities. `internal/app` has Go use cases, `internal/runtime` the mock/contract, `internal/persistence` records, and `internal/platform` bindings/native shell. AGENTS.md provides a short change checklist. No empty architectural folders are created.
+`app/bootstrap` composes; `workbench` owns shell-neutral interaction services (the directory name is retained; visual components live in `presentation`); `platform/desktop-api` is the frontend native boundary; `presentation` owns shells/themes/density/shared visual primitives; `shared` only contains schema/subscription utilities. `internal/app` has Go use cases, `internal/runtime` the mock/contract, `internal/persistence` records, and `internal/platform` bindings/native shell. AGENTS.md provides a short change checklist. No empty architectural folders are created.
 
-See [PRESENTATION.md](PRESENTATION.md) for static shell selection, HTML/Tailwind conversion and preference persistence. `task presentations-verify` tests the alternate shell and restores the current selection.
+See [PRESENTATION.md](PRESENTATION.md) for static shell selection, HTML/Tailwind conversion and preference persistence. `task presentations-verify` tests both supplied shells and restores the current selection. Extend its explicit cases and `playwright.config.ts` when adding another shell.

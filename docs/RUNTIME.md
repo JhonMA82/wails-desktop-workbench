@@ -1,6 +1,6 @@
 # Runtime
 
-React presentation → Workbench/Application API → Wails → Go host → optional runtime.
+Either React shell → shared Application API → Wails → Go host → optional runtime.
 
 `internal/runtime.Adapter` is the stable engine boundary: `Probe`, `Start`, `Stop`, `Health`, `Version`, `Capabilities`, `Execute`, `Cancel`. Execute receives a context, request ID/method and progress callback, and returns a result or error. The UI sees jobs and application contracts, not runtime implementation details.
 

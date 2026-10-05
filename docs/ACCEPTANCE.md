@@ -2,21 +2,21 @@
 
 Presentation refactor validated on 2026-10-05: `task verify` passed in 50.41 s; 16 frontend tests, existing Go race tests, 3 Workbench E2E scenarios and 1 Minimal E2E scenario passed. Both presentations and the selected Linux native app build. Go source, bindings, dependency versions and lockfiles are unchanged. See [PRESENTATION.md](PRESENTATION.md) and VERIFICATION.txt.
 
-The remaining sections retain the original v1 acceptance snapshot and performance baseline from before the presentation extraction; they are historical measurements, not new refactor timings.
+Application architecture v1 remains frozen. Presentation is selected through static presets; this does not change Go services or introduce a runtime registry.
 
-The complete Task acceptance sequence passes on Linux amd64, Go 1.26.1, Wails v3.0.0-beta.27, Bun 1.3.10. Architecture v1 is frozen.
-
-## Verified
+## Verified in the presentation refactor
 
 - Strict TypeScript, ESLint, architectural import/version checks and Go vet.
-- 9 frontend tests across 5 files: registry/context/shortcuts, Ribbon, documents/settings/layout restoration, history/trust, docking/pinning/floating and job UI.
-- Go tests with `-race`: real job completion/cancellation/failure, runtime contract/progress/cancellation, settings/workspace/recovery, schema migration/future rejection, concurrent atomic writes, diagnostics and trust.
-- Native Linux binary compiles successfully with official GTK3 support.
-- 3 Playwright E2E scenarios: critical launch/document/panel/command/job/restart; cancellation/failure/trust/small-window; overlay border/floating persistence/browser popout.
-- The same command implementation is reached through Ribbon, palette and shortcuts. Panel factories do not import the desktop transport; features cannot import FlexLayout.
-- Dependency versions/lockfiles are retained and installed packages declare commercially usable OSS licences. See notices and inventories.
+- 16 frontend tests across 6 files, including both shell renders, shared command/document/job behaviour, preferences, layout restoration and Workbench docking.
+- Go tests with `-race`: jobs, runtime progress/cancellation/failure, persistence/migrations, atomic writes, diagnostics and trust.
+- 3 Workbench browser scenarios: critical workspace/document/panel/command/job/restart; cancellation/failure/trust/small-window; overlay/floating restoration/browser popout.
+- 1 Minimal browser scenario: shared commands/jobs, preference restoration and layout controls. Minimal production assets exclude FlexLayout CSS.
+- Both frontend presets and the selected Linux native binary compile. Native launch limitations below still apply.
+- Exact dependencies and lockfiles are retained; licence inventories/notices are unchanged.
 
-## Measured baseline
+Documentation was subsequently reconciled with source paths, Taskfile and the static shell contract. That documentation-only review is not a new full acceptance or performance measurement.
+
+## Historical original-v1 performance baseline
 
 Ubuntu 24.04.3 Linux x64 container; 9 logical CPUs reported. Network/cache values are environment-specific; no performance target is asserted. Exact structured data: build/baseline.json; reproducible command: `task baseline`.
 
@@ -27,7 +27,7 @@ Ubuntu 24.04.3 Linux x64 container; 9 logical CPUs reported. Network/cache value
 | incremental-build | 4.7 s | Same source; existing Go cache |
 | dev-startup | 0.45 s | Vite HTTP ready, not native window startup |
 | frontend-hmr | 0.088 s | AppBar React module edit to visible update |
-| verify | 24.249 s | Full Task acceptance suite |
+| verify | 24.249 s | Original-v1 suite, before multi-shell acceptance |
 
 ## Validation limits and real pending checks
 
@@ -37,110 +37,36 @@ No stack decision was replaced. Linux GTK3 is an official Wails build option. Na
 
 No domain engine, plugin system, AI/MCP, server, database, auth or cloud was added. Browser fixture jobs are explicit; production desktop uses Go JobService and MockRuntime.
 
-## Original v1 repository structure (before presentation extraction)
+## Current repository navigation
 
 ```text
-build/
-  baseline.json
-  config.yml
-  workbench-initial.png
-  workbench-preview.png
-docs/
-  ARCHITECTURE.md
-  DEVELOPMENT.md
-  GO_LICENSES.json
-  NPM_LICENSES.json
-  RUNTIME.md
-  THIRD_PARTY_NOTICES.md
-  WORKBENCH.md
-frontend/
-  bindings/
-    github.com/
-      wailsapp/
-    workbench/
-      internal/
-  public/
-    popout.html
-  src/
-    app/
-      bootstrap/
-      providers/
-      router/
-    platform/
-      desktop-api/
-    shared/
-      schemas/
-      ui/
-      utils/
-    workbench/
-      activity-bar/
-      commands/
-      context/
-      dialogs/
-      documents/
-      history/
-      jobs/
-      keybindings/
-      layout/
-      menus/
-      notifications/
-      palette/
-      panels/
-      ribbon/
-      shell/
-      status/
-      workspace/
-    main.tsx
-    styles.css
-    test-setup.ts
-  index.html
-  tsconfig.json
-  vite.config.ts
+frontend/src/
+  app/                 bootstrap, providers, high-level router
+  presentation/
+    contract/          service view and static shell types
+    shells/
+      workbench/       Ribbon, Activity Bar, FlexLayout adapter
+      minimal/         toolbar, explicit regions, MinimalLayout
+    themes/            Graphite and Light
+    density/           Compact and Comfortable
+    design-system/     shared primitives, menus, palette, icons
+    views/             shared document, panel and settings views
+  workbench/           commands, context, documents, history, jobs,
+                       layout contract, workspace and interaction services
+  platform/desktop-api/ native API and explicit browser fixture
+  shared/              schemas and subscription utilities
+frontend/bindings/      generated Wails bindings
 internal/
-  app/
-    diagnostics/
-      diagnostics.go
-    documents/
-      document.go
-    jobs/
-      jobs.go
-      jobs_test.go
-    settings/
-      settings.go
-    trust/
-      trust.go
-    workspace/
-      workspace.go
-  persistence/
-    store.go
-  platform/
-    host.go
-    host_test.go
-    window.go
-  runtime/
-    mock.go
-    mock_test.go
-    runtime.go
-scripts/
-  baseline.mjs
-  boundaries.mjs
-tests/
-  workbench.spec.ts
-.gitignore
-.prettierignore
-.prettierrc.json
-.tool-versions
-AGENTS.md
-LICENSE
-README.md
-Taskfile.yml
-bun.lock
-components.json
-eslint.config.js
-go.mod
-go.sum
-main.go
-package-lock.json
-package.json
-playwright.config.ts
+  app/                 diagnostics, documents, jobs, settings, trust, workspace
+  persistence/         atomic versioned records
+  platform/            host bindings and native window
+  runtime/             Adapter and MockRuntime
+scripts/               boundaries, baseline, verify-presentations
+tests/                 Workbench and Minimal Playwright smoke
+docs/                  architecture, presentation, development, runtime,
+                       Workbench, acceptance and licence inventories
+build/                 Wails config, screenshots and historical baseline
+Taskfile.yml           operational commands
 ```
+
+`features/` is created only when a product adds actual domain code; no empty folder is included. See [DEVELOPMENT.md](DEVELOPMENT.md) for additions and [PRESENTATION.md](PRESENTATION.md) for interface conversion.

@@ -1,12 +1,14 @@
 # Workbench
 
+This document describes the concrete Workbench presentation. Minimal and future interfaces reuse the shell-neutral services; their structure belongs in `presentation/shells`. See [PRESENTATION.md](PRESENTATION.md).
+
 ## Shell
 
 App Bar/project identity → compact Home/View/Tools Ribbon → Activity Bar + docking → Status Bar. Explorer, EditorArea/DocumentTabs, Inspector and bottom Problems/Output/Console/Jobs are available initially. Demo documents contain only a counter operation.
 
 FlexLayout provides tabsets, alternating horizontal/vertical splits, resize, drag/drop, maximize, floating, browser popouts, pinned tabs and borders. `LayoutService` owns JSON restoration and panel transitions. Hiding removes the empty sidebar region; showing recreates the region. Collapse moves a sidebar into an overlay border. Floating state survives restoration. Popout content is rendered through the same React context.
 
-`DockingLayout` supplies Lucide icons and document labels; Workbench CSS tokens map to FlexLayout's `--flexlayout-*` variables. The docking engine does not define the visual system. Native shell popout behaviour still needs validation on the target desktop; browser popout has an automated test.
+`DockingLayout` supplies Lucide icons and document labels; semantic theme/density tokens map to FlexLayout's `--flexlayout-*` variables. The docking engine does not define the visual system. Native shell popout behaviour still needs validation on the target desktop; browser popout has an automated test.
 
 ## Commands and context
 
@@ -14,7 +16,7 @@ One `CommandRegistry` owns execution, title, category, icon, optional feature/ke
 
 Examples: `document.open`, `document.save`, `view.explorer.toggle`, `layout.reset`, `jobs.demo.start`, `jobs.demo.cancel`. Save enables only for a dirty document. Job start is disabled for untrusted workspaces and while a job is running. Workspace-open/close commands switch visibility.
 
-Context includes workspace open/trusted, document open/dirty, editor focus, selection count, job running, sidebar visibility and history availability. Conditions are typed functions evaluated over a snapshot. Components do not repeat these conditions.
+Context includes workspace open/trusted, document open/dirty, editor focus, selection count, job running, sidebar visibility and history availability. Layout capabilities also supply `layout.floating`, `layout.collapse` and `panel.<id>.supported`, so unsupported actions disappear in Minimal. Conditions are typed functions evaluated over a snapshot. Components do not repeat these conditions.
 
 Full Ribbon shows category command groups. Slim keeps menu/categories and palette entry. Hidden removes the Ribbon. Below 900 px a full Ribbon becomes slim for that window without overwriting the user's persisted preference. Focus mode hides panels and Ribbon and restores the previous layout on exit.
 

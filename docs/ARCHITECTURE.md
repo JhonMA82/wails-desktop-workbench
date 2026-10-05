@@ -14,13 +14,13 @@ flowchart TD
 | Responsibility | Owner | Boundary |
 |---|---|---|
 | Navigation | TanStack Router | `/`, `/projects`, `/workspace/$workspaceId`, `/settings`, `/about` |
-| Docking | LayoutService + DockingLayout | FlexLayout confined to `presentation/shells/workbench/layout` |
+| Layout | Selected shell adapter implementing LayoutPort | Workbench: LayoutService + DockingLayout/FlexLayout; Minimal: explicit regions + MinimalLayout |
 | Commands | CommandRegistry | Stable IDs, conditions checked again on execute |
 | Context | ContextKeyService | Small predicate functions; no expression parser |
 | Documents | DocumentService | IDs independent of URI and docking nodes |
 | Workspace | WorkspaceService | Identity/trust; composes documents and layout for persistence |
 | Document history | HistoryService per document | Do/undo/redo operations, not command replay |
-| Layout history | LayoutService | Separate bounded JSON snapshot history |
+| Layout history | Selected layout adapter | Separate bounded snapshots; independent of document history |
 | Jobs | Go JobService | Frontend JobService polls typed snapshots every 150 ms |
 | User settings | Typed observable + Go Settings / frontend density preference | Separate versioned settings record |
 | Diagnostics | Go Diagnostics + frontend capture | Bounded snapshot of 100 entries |
@@ -38,13 +38,17 @@ Go packages below `internal/app`, `internal/runtime` and `internal/persistence` 
 ## Persisted records
 
 - `settings/user.json`: theme, Ribbon mode, restore preference. Native density is a frontend-only versioned WebView preference, keeping the Go contract unchanged.
-- `workspaces/<id>.json`: identity/trust, documents/values/dirty flags, active document, docking JSON.
+- `workspaces/<id>.json`: identity/trust, documents/values/dirty flags, active document, opaque shell layout snapshot (Workbench docking JSON and Minimal visibility state).
 - `recovery/session.json`: last workspace identity and Ribbon mode snapshot.
 - `recovery/window.json`: native window width/height.
 
-All records have `schemaVersion: 1`. v0 fields retain their meaning and owners supply defaults; future versions are rejected. Settings own Ribbon mode; the recovery snapshot is not a second setting owner. Domain project storage is deliberately absent.
+The Go records have `schemaVersion: 1`. Go Store accepts v0 fields with owner-supplied defaults and rejects future record versions. Native density also has a versioned frontend record; invalid/missing/unsupported density data defaults to Compact. Minimal defaults its own layout on invalid data, while preserving the foreign snapshot. These frontend fallbacks are not Go record migrations. Settings own Ribbon mode; the recovery snapshot is not a second setting owner. Domain project storage is deliberately absent.
 
 The Go store writes a same-directory temporary file, syncs/closes it and renames it. Temporary files are cleaned up. Full power-loss durability and platform-specific directory sync semantics are not claimed. Session writes are serialized in the frontend; native close waits for the last snapshot before closing.
+
+## Presentation ownership
+
+`presentation/shells` owns interface structure, `presentation/themes` colors/fonts/radii, `presentation/density` sizes, `presentation/design-system` reusable primitives, and `presentation/views` shared demo/service views. `workbench` retains its name but contains shell-neutral services, not visual components. Product UI belongs in `features/<name>`; a SaaS-style desktop shell can reuse application services without Ribbon or docking. No SaaS/auth/cloud feature is implemented.
 
 ## Extension boundaries
 

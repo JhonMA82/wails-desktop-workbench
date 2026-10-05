@@ -1,6 +1,6 @@
 # Desktop Workbench
 
-Reusable desktop foundation for technical applications. React 19 + TypeScript own presentation and Workbench services; Wails 3 + Go own the desktop host, persistence and jobs. No domain engine is bundled.
+Reusable desktop foundation with interchangeable static Workbench and Minimal presentations, independent theme/density preferences, and shared application services. React 19 + TypeScript own presentation and shell-neutral interaction services; Wails 3 + Go own the desktop host, persistence and jobs. No domain engine is bundled.
 
 ## Screenshots
 
@@ -32,9 +32,9 @@ Linux GTK3 builds need a working desktop D-Bus session and `pkg-config`, `libgtk
 task verify
 ```
 
-For the explicit browser preview: `task web`, then open `http://127.0.0.1:5173/?preview=1`. This uses a named browser fixture with localStorage; production desktop always calls Go. It never silently falls back on a failed desktop connection.
+For the explicit browser preview: `task web`, then open `http://127.0.0.1:5173/?preview=1`. This uses a named browser fixture with localStorage; production desktop application services call Go; density is a frontend WebView preference. It never silently falls back on a failed desktop connection.
 
-## Demo
+## Workbench demo
 
 Open/close demo documents, move/pin/float/popout panels, collapse sidebars to overlay borders, switch Ribbon modes, use the Command Palette, run/cancel/fail a demo job, undo/redo an operation, reset the layout and restart to restore the workspace.
 
@@ -49,7 +49,7 @@ Open/close demo documents, move/pin/float/popout panels, collapse sidebars to ov
 
 Mod means Ctrl on Linux/Windows and Cmd on macOS. Ribbon Home/View/Tools, menu, context menu, keyboard and palette dispatch the same Command IDs.
 
-[Architecture](docs/ARCHITECTURE.md) · [Workbench](docs/WORKBENCH.md) · [Runtime](docs/RUNTIME.md) · [Development](docs/DEVELOPMENT.md) · [Acceptance](docs/ACCEPTANCE.md)
+[Architecture](docs/ARCHITECTURE.md) · [Workbench](docs/WORKBENCH.md) · [Presentation](docs/PRESENTATION.md) · [Runtime](docs/RUNTIME.md) · [Development](docs/DEVELOPMENT.md) · [Acceptance](docs/ACCEPTANCE.md)
 
 Mandatory boilerplate dependencies must remain open source and commercially usable without paid runtime or developer licences.
 
